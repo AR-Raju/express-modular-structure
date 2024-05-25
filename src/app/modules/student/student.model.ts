@@ -1,9 +1,7 @@
-import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import { StudentModel, TStudent } from "./student.interface";
 
 import validator from "validator";
-import config from "../../config";
 
 const userNameSchema = new Schema({
   firstName: {
@@ -99,13 +97,12 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       unique: true,
       trim: true,
     },
-    password: {
-      type: String,
-      required: [true, "Student password is required"],
-      trim: true,
-      maxlength: [20, "Pasword can not be more than 20 characters"],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, "user ID is required"],
+      unique: true,
+      ref: "User",
     },
-
     name: {
       type: userNameSchema,
       required: [true, "Student name is required"],
@@ -164,16 +161,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, "Local guardian information is required"],
     },
     profileImg: { type: String, trim: true },
-    isActive: {
-      type: String,
-      enum: {
-        values: ["active", "block"],
-        message:
-          "{VALUE} is not a valid status. Status can be either 'active' or 'block'",
-      },
-      default: "active",
-      trim: true,
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -190,23 +177,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 studentSchema.virtual("fullName").get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
-
-// pre save middleware/ hook : will work on create/save function
-studentSchema.pre("save", async function (next) {
-  // console.log(this, "pre hook: we will save the data");
-  // hashing password and save into DB
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds)
-  );
-  next();
-});
-// post save middleware/ hook
-studentSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
 });
 
 // Query middleware
