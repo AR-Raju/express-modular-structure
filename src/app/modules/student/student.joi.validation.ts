@@ -47,7 +47,7 @@ const studentValidationSchema = Joi.object({
       "any.only":
         'The gender field can be only one of the following: "male", "female", or "others"',
     }),
-  dateOfBirth: Joi.string().trim(),
+  dateOfBirth: Joi.date().optional(),
   email: Joi.string().trim().email().required(),
   contactNo: Joi.string().trim().required(),
   emergencyContactNo: Joi.string().trim().required(),
