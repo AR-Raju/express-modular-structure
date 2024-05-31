@@ -18,7 +18,6 @@ const createAcademicSemesterIntoDB = async (
   }
 
   const result = await AcademicSemesterModel.create(semesterData);
-  console.log(result);
   return result;
 };
 

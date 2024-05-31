@@ -38,8 +38,22 @@ const deleteSingleStudent = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateStudent = catchAsync(async (req, res, next) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
+  const result = await studentServices.updateStudentIntoDB(studentId, student);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Single Student updated successfully",
+    data: result,
+  });
+});
+
 export const studentControllers = {
   getAllStudents,
   getSingleStudent,
   deleteSingleStudent,
+  updateStudent,
 };

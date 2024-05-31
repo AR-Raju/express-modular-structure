@@ -39,7 +39,6 @@ const userSchema = new Schema<TUser>(
 
 // pre save middleware/ hook : will work on create/save function
 userSchema.pre("save", async function (next) {
-  // console.log(this, "pre hook: we will save the data");
   // hashing password and save into DB
   const user = this;
   user.password = await bcrypt.hash(
