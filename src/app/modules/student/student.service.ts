@@ -1,20 +1,88 @@
 import httpStatus from "http-status";
 import mongoose from "mongoose";
+import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
 import { UserModel } from "../user/user.model";
+import { studentSearchAbleFields } from "./student.constant";
 import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
 
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
-    .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
-  return result;
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  // const queryObj = { ...query };
+  // const studentSearchAbleFields = ["email", "name.firstName", "presentAddress"];
+
+  // try {
+  //   // Initialize a basic query that matches all documents
+  //   let searchQuery = Student.find({});
+
+  //   // Add search term condition if it is present
+  //   if (query?.searchTerm) {
+  //     const searchTerm = query.searchTerm as string;
+  //     searchQuery = Student.find({
+  //       $or: studentSearchAbleFields.map((field) => ({
+  //         [field]: { $regex: searchTerm, $options: "i" },
+  //       })),
+  //     });
+  //   }
+
+  //   // Exclude special query parameters from the filter query
+  //   const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
+  //   excludeFields.forEach((el) => delete queryObj[el]);
+
+  //   console.log({ query, queryObj });
+
+  //   // Apply additional filters
+  //   searchQuery = searchQuery
+  //     .find(queryObj)
+  //     .populate("admissionSemester")
+  //     .populate({
+  //       path: "academicDepartment",
+  //       populate: {
+  //         path: "academicFaculty",
+  //       },
+  //     });
+
+  //   // Apply sorting
+  //   if (query?.sort) {
+  //     const sort = query.sort as string;
+  //     searchQuery = searchQuery.sort(sort);
+  //   } else {
+  //     searchQuery = searchQuery.sort("-createdAt");
+  //   }
+
+  //   // Apply pagination
+  //   let limit = 10; // Default limit
+  //   let page = 1;
+  //   if (query?.limit) {
+  //     limit = Number(query.limit);
+  //   }
+  //   if (query?.page) {
+  //     page = Number(query.page);
+  //   }
+  //   const skip = (page - 1) * limit;
+  //   searchQuery = searchQuery.skip(skip).limit(limit);
+
+  //   // Apply field selection
+  //   if (query?.fields) {
+  //     const fields = (query.fields as string).split(",").join(" ");
+  //     searchQuery = searchQuery.select(fields);
+  //   } else {
+  //     searchQuery = searchQuery.select("-__v"); // Exclude __v by default
+  //   }
+  try {
+    const searchQuery = new QueryBuilder(Student.find(), query)
+      .search(studentSearchAbleFields)
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+
+    const result = await searchQuery.modelQuery;
+    return result;
+  } catch (err) {
+    console.error("Error fetching students:", err);
+    throw new Error("Error fetching students");
+  }
 };
 
 const getSingleStudentFromDB = async (id: string) => {
