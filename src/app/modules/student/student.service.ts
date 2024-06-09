@@ -70,7 +70,17 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   //     searchQuery = searchQuery.select("-__v"); // Exclude __v by default
   //   }
   try {
-    const searchQuery = new QueryBuilder(Student.find(), query)
+    const searchQuery = new QueryBuilder(
+      Student.find()
+        .populate("admissionSemester")
+        .populate({
+          path: "academicDepartment",
+          populate: {
+            path: "academicFaculty",
+          },
+        }),
+      query
+    )
       .search(studentSearchAbleFields)
       .filter()
       .sort()
