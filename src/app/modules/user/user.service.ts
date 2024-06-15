@@ -11,7 +11,7 @@ import { Faculty } from "../faculty/faculty.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
-import { UserModel } from "./user.model";
+import { User } from "./user.model";
 import {
   generateAdminId,
   generateFacultyId,
@@ -43,7 +43,7 @@ const createStudentInfoDB = async (password: string, payload: TStudent) => {
     );
 
     // create a user transaction-1
-    const newUser = await UserModel.create([userData], { session });
+    const newUser = await User.create([userData], { session });
 
     //   create a student
     if (!newUser.length) {
@@ -83,7 +83,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
     userData.id = await generateFacultyId();
 
-    const newUser = await UserModel.create([userData], { session });
+    const newUser = await User.create([userData], { session });
 
     if (!newUser) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create new user");
@@ -124,7 +124,7 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 
     userData.id = await generateAdminId();
 
-    const newUser = await UserModel.create([userData], { session });
+    const newUser = await User.create([userData], { session });
 
     if (!newUser) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create new user");

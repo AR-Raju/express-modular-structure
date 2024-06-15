@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { FacultyServices } from "./faculty.service";
 
 const getAllFaculties = catchAsync(async (req, res, next) => {
+  console.log("test", req.user);
   const result = await FacultyServices.getAllFacultyFromDB(req.query);
 
   sendResponse(res, {

@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
-import { UserModel } from "../user/user.model";
+import { User } from "../user/user.model";
 import { AdminSearchableFields } from "./admin.constant";
 import { TAdmin } from "./admin.interface";
 import { Admin } from "./admin.model";
@@ -57,7 +57,7 @@ const deleteAdminFromDB = async (id: string) => {
     }
     // get user _id from deletedAdmin
     const userId = deletedAdmin.user;
-    const deletedUser = await UserModel.findByIdAndUpdate(
+    const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
       { new: true, session }

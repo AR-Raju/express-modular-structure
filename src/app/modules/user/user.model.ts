@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import config from "../../config";
-import { TUser } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -53,4 +53,15 @@ userSchema.post("save", function (doc, next) {
   next();
 });
 
-export const UserModel = model<TUser>("user", userSchema);
+userSchema.statics.isUerExistsByCustomId = async function (id: string) {
+  return await User.findOne({ id });
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTxtPass: string,
+  hashedPass: string
+) {
+  return await bcrypt.compare(plainTxtPass, hashedPass);
+};
+
+export const User = model<TUser, UserModel>("user", userSchema);

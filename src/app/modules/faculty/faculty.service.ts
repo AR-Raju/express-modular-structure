@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
-import { UserModel } from "../user/user.model";
+import { User } from "../user/user.model";
 import { FacultySearchableFields } from "./faculty.constant";
 import { TFaculty } from "./faculty.interface";
 import { Faculty } from "./faculty.model";
@@ -58,7 +58,7 @@ const deleteFacultyFromDB = async (id: string) => {
     }
     // get user _id from deletedFaculty
     const userId = deletedFaculty.user;
-    const deletedUser = await UserModel.findByIdAndUpdate(
+    const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
       { new: true, session }
