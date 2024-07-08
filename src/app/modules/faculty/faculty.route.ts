@@ -6,7 +6,7 @@ import { facultyValidations } from "./faculty.validation";
 
 const router = Router();
 
-router.get("/", auth(), FacultyControllers.getAllFaculties);
+router.get("/", auth("admin", "faculty"), FacultyControllers.getAllFaculties);
 router.get("/:id", FacultyControllers.getSingleFaculty);
 router.patch(
   "/:id",

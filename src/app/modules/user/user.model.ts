@@ -40,6 +40,7 @@ const userSchema = new Schema<TUser, UserModel>(
 // pre save middleware/ hook : will work on create/save function
 userSchema.pre("save", async function (next) {
   // hashing password and save into DB
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   user.password = await bcrypt.hash(
     user.password,
@@ -53,8 +54,8 @@ userSchema.post("save", function (doc, next) {
   next();
 });
 
-userSchema.statics.isUerExistsByCustomId = async function (id: string) {
-  return await User.findOne({ id });
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await User.findOne({ id }).select("+password");
 };
 
 userSchema.statics.isPasswordMatched = async function (

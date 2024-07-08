@@ -6,7 +6,7 @@ import { FacultyServices } from "./faculty.service";
 const getAllFaculties = catchAsync(async (req, res, next) => {
   console.log("test", req.user);
   const result = await FacultyServices.getAllFacultyFromDB(req.query);
-
+  console.log(req.cookies);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
